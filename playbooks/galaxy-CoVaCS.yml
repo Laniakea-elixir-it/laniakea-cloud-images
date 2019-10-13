@@ -1,0 +1,55 @@
+---
+# Install Galaxy
+- name: Apply Galaxy Role
+  hosts: localhost
+  connection: local
+  roles:
+    - role: indigo-dc.galaxycloud
+      create_galaxy_admin: false
+      GALAXY_VERSION: "release_19.05"
+      create_galaxy_admin: false
+      set_pgsql_random_password: false
+      set_proftpd_random_password: false
+      require_login: 'False' # disable login option only for galaxy images
+
+# Install tools
+- name: Install tools
+  hosts: localhost
+  connection: local
+  pre_tasks:
+    - name: Set premissions
+      file:
+        path: '{{ item }}'
+        state: directory
+        owner: 'galaxy'
+        group: 'galaxy'
+      with_items:
+        - '/export'
+      become_user: root
+      become_method: sudo
+  roles:
+    - role: indigo-dc.galaxycloud-tools
+      galaxy_flavor: 'galaxy-CoVaCS'
+      GALAXY_VERSION: 'release_19.05'
+      move_datasets: false
+      create_bootstrap_user: true
+      when: galaxy_flavor != 'galaxy-no-tools'
+
+# Clean image
+- name: Post installation tasks
+  hosts: localhost
+  connection: local
+  pre_tasks:
+    - set_fact:
+        galaxy_user: 'galaxy'
+  tasks:
+    - name: 'Remove galaxy ssh public key'
+      authorized_key:
+        user: '{{ galaxy_user }}'
+        key: '{{ galaxy_instance_key_pub }}'
+        state: absent
+    - name: 'Remove root ssh public key' # needed by IM
+      authorized_key:
+        user: 'root'
+        key: '{{ galaxy_instance_key_pub }}'
+        state: absent
