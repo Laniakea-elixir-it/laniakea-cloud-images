@@ -112,8 +112,17 @@ Path for tools install.
 Usage
 -----
 
+After the script configuration run:
 ```
 /bin/bash setup.sh
+```
+
+The Galaxy tool_deps images are in ``/export`` directory.
+
+Finally, the image can be cleaned using the clean_instance script:
+
+```
+/bin/bash /tmp/clean_instance.sh
 ```
 
 Author
