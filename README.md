@@ -39,7 +39,9 @@ Control variables
 Ansible is installed in a virtual environment.
 It is possibile to configure the path of the virtual environment and the Ansible version.
 By default, since the INDIGO PaaS Orchestrator and the Infrastructure Manager, currently, are using ansible 2.2.1, the same version is used.
+
 ``ansible_venv``: /tmp/myansible
+
 ``ANSIBLE_VERSION``: 2.2.1
 
 # Galaxycloud ansible roles branch.
