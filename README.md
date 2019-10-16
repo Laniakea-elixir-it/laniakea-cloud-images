@@ -44,14 +44,16 @@ By default, since the INDIGO PaaS Orchestrator and the Infrastructure Manager, c
 
 ``ANSIBLE_VERSION``: 2.2.1
 
-# Galaxycloud ansible roles branch.
-# This script exploits Laniakea ansible roles in INDIGO GitHub repository.
-# It is possible to configure ansible roles branch to download. By default the master branch is used.
-#
-# indigo-dc.galaxycloud: install the Galaxy production environment
-BRANCH='master'
-# indigo-dc.galaxycloud-tools: install Galaxy tools and dependencies 
-TOOLS_BRANCH='master'
+Galaxycloud ansible roles branch.
+This script exploits Laniakea ansible roles in INDIGO GitHub repository.
+It is possible to configure ansible roles branch to download. By default the master branch is used.
+indigo-dc.galaxycloud: install the Galaxy production environment
+
+``BRANCH``: 'master'
+
+indigo-dc.galaxycloud-tools: install Galaxy tools and dependencies 
+
+``TOOLS_BRANCH``: 'master'
 
 # Ansible roles installation directory
 role_dir=/tmp/roles
