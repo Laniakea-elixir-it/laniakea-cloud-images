@@ -97,7 +97,7 @@ Set the galaxy flavors.
 - galaxy-rna-workbench
 - galaxy-epigen
 
-``galaxy_flavor``: "galaxy-minimal"
+``galaxy_flavor``: "galaxy-no-tools"
 
 Install a ssh public key on Galaxy and root user.
 This key will be removed after Galaxy and tools installation.
