@@ -69,10 +69,11 @@ WARNING: DO NOT ENABLE
 On Galaxy cluster express the galaxy user must be already created in the image, to grant the right permissions.
 The galaxy user is created with 4001 UID and GID, that are the galaxy user default UID and GID on galaxy images, thus granting the right permissions.
 Enable this option only for worker nodes image creation.
+To create the image for the worker nodes set the galaxy_flavor to base_image.
 
 ``create_galaxy_user``: false
 
-Crate a tar.gz with conda tools dependencies on /export
+Create a tar.gz with conda tools dependencies on /export
 The created tarball will have the galaxy flavour name.
 
 ``create_tool_deps_tar``: true
