@@ -27,12 +27,6 @@ The script support also the following special flavours:
 - base_image: an up-to-date image with all needed galaxy dependencies to speed-up Galaxy deployment
 - update_image: used to update the base_image.
 
-Usage
------
-```
-/bin/bash setup.sh
-```
-
 Control variables
 -----------------
 
@@ -103,14 +97,24 @@ Set the galaxy flavors.
 - galaxy-rna-workbench
 - galaxy-epigen
 
-``galaxy_flavor``: "$galaxy_flavor"
-# Install a ssh public key on Galaxy and root user.
-# This key will be removed after Galaxy and tools installation.
-# See the galaxy playbook: https://raw.githubusercontent.com/Laniakea-elixir-it/laniakea-images/master/playbooks/galaxy.yml
-galaxy_instance_key_pub="ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDy787GZIVdHW7QV+Wu2q9q5k5CiTOq04ENioVig88IIVGNqi8qiX+3fhZx/w2hhlz6AePrYu8CfVPplCRdSMjP46av53V1M7r0+yqJvuk1PC2f/rSoEL95TvaeiV28+5Wy4MC58UvYuewuhIHcbfPiXHf3NEE3scd38GXCYKLhAP28mUQ950Ar4SoWv4irv21maJwkwqn5AYXcy1yrbBZtaTbQELVPa/E6X9j+k29bn32ITmmtKBA3ne/QlFRaaYI3XggvMXhhSSIYsJUdlSOjUTriB2DraHsxMGfOPjmPXkjvrXp9MfOzjMg10fb7K2Mda8u/ujK/dvx3BnhlSIpn marco@marco-Latitude-3440"
-# Path for tools install.
-export_dir="/export"
+``galaxy_flavor``: "galaxy-minimal"
 
+Install a ssh public key on Galaxy and root user.
+This key will be removed after Galaxy and tools installation.
+See the galaxy playbook: https://raw.githubusercontent.com/Laniakea-elixir-it/laniakea-images/master/playbooks/galaxy.yml
+
+``galaxy_instance_key_pub``: ""
+
+Path for tools install.
+
+``export_dir``: "/export"
+
+Usage
+-----
+
+```
+/bin/bash setup.sh
+```
 
 Author
 ------
