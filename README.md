@@ -47,6 +47,7 @@ By default, since the INDIGO PaaS Orchestrator and the Infrastructure Manager, c
 Galaxycloud ansible roles branch.
 This script exploits Laniakea ansible roles in INDIGO GitHub repository.
 It is possible to configure ansible roles branch to download. By default the master branch is used.
+
 indigo-dc.galaxycloud: install the Galaxy production environment
 
 ``BRANCH``: 'master'
@@ -55,44 +56,54 @@ indigo-dc.galaxycloud-tools: install Galaxy tools and dependencies
 
 ``TOOLS_BRANCH``: 'master'
 
-# Ansible roles installation directory
-role_dir=/tmp/roles
+Ansible roles installation directory
 
-# It is possible to automatically download a script to clean the image:
-# https://raw.githubusercontent.com/Laniakea-elixir-it/laniakea-images/devel/scripts/clean_instance.sh
-# The script is automatically downloaded to /tmp/clean_instance.sh and has to be run manually
-# after the setup procedure.
-download_clean_instance_script=true
+``role_dir``: /tmp/roles
 
-# Specific configuration for Laniakea@ReCaS
-# Enable ReCaS 2-nic configuration
-# WARNING: DO NOT ENABLE
-enable_2nic_config=false
+It is possible to automatically download a script to clean the image:
+https://raw.githubusercontent.com/Laniakea-elixir-it/laniakea-images/devel/scripts/clean_instance.sh
+The script is automatically downloaded to /tmp/clean_instance.sh and has to be run manually
+after the setup procedure.
 
-# On Galaxy cluster express the galaxy user must be already created in the image, to grant the right permissions.
-# The galaxy user is created with 4001 UID and GID, that are the galaxy user default UID and GID on galaxy images, thus granting the right permissions.
-# Enable this option only for worker nodes image creation.
-create_galaxy_user=false
+``download_clean_instance_script``: true
 
-# Crate a tar.gz with conda tools dependencies on /export
-# The created tarball will have the galaxy flavour name.
-create_tool_deps_tar=true
+Specific configuration for Laniakea@ReCaS
+Enable ReCaS 2-nic configuration
+WARNING: DO NOT ENABLE
+``enable_2nic_config``: false
 
-# Playbook variables
-# The default playbook is located here: https://raw.githubusercontent.com/Laniakea-elixir-it/laniakea-images/master/playbooks/galaxy.yml
-repository_url='https://raw.githubusercontent.com/Laniakea-elixir-it/laniakea-images/master'
-playbook='galaxy.yml'
-# Set the Galaxy version.
-galaxy_version="release_19.05"
-# Set the galaxy flavors.
-# "base_image": an up-to-date image with all needed galaxy dependencies to speed-up Galaxy deployment
-# "update_image": used to update the base_image.
-# galaxy-no-tools
-# galaxy-CoVaCS
-# galaxy-GDC_Somatic_Variant
-# galaxy-rna-workbench
-# galaxy-epigen
-galaxy_flavor="$galaxy_flavor"
+On Galaxy cluster express the galaxy user must be already created in the image, to grant the right permissions.
+The galaxy user is created with 4001 UID and GID, that are the galaxy user default UID and GID on galaxy images, thus granting the right permissions.
+Enable this option only for worker nodes image creation.
+
+``create_galaxy_user``: false
+
+Crate a tar.gz with conda tools dependencies on /export
+The created tarball will have the galaxy flavour name.
+
+``create_tool_deps_tar``: true
+
+Playbook variables
+The default playbook is located here: https://raw.githubusercontent.com/Laniakea-elixir-it/laniakea-images/master/playbooks/galaxy.yml
+
+``repository_url``: 'https://raw.githubusercontent.com/Laniakea-elixir-it/laniakea-images/master'
+
+``playbook``: 'galaxy.yml'
+
+Set the Galaxy version.
+
+``galaxy_version``: "release_19.05"
+
+Set the galaxy flavors.
+- "base_image": an up-to-date image with all needed galaxy dependencies to speed-up Galaxy deployment
+- "update_image": used to update the base_image.
+- galaxy-no-tools
+- galaxy-CoVaCS
+- galaxy-GDC_Somatic_Variant
+- galaxy-rna-workbench
+- galaxy-epigen
+
+``galaxy_flavor``: "$galaxy_flavor"
 # Install a ssh public key on Galaxy and root user.
 # This key will be removed after Galaxy and tools installation.
 # See the galaxy playbook: https://raw.githubusercontent.com/Laniakea-elixir-it/laniakea-images/master/playbooks/galaxy.yml
