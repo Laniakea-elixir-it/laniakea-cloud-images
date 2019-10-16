@@ -21,10 +21,11 @@
   vars:
     galaxy_version: "<galaxy_version>"
     galaxy_flavor: "<galaxy_flavor>"
+    export_dir: "<export_dir>"
   pre_tasks:
     - name: Set permissions
       file:
-        path: '/export'
+        path: '{{ export_dir }}'
         state: directory
         owner: 'galaxy'
         group: 'galaxy'
