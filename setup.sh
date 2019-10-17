@@ -93,6 +93,7 @@ export_dir="/export"
 LOGFILE="/tmp/setup.log"
 now=$(date +"%b %d %y - %H.%M.%S")
 rm -f $LOGFILE
+echo "Start log: ${now}"
 echo "Start log: ${now}" &>>  $LOGFILE
 
 #________________________________
