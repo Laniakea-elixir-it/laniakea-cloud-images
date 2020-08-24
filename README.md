@@ -32,11 +32,11 @@ Control variables
 
 Ansible is installed in a virtual environment.
 It is possibile to configure the path of the virtual environment and the Ansible version.
-By default, since the INDIGO PaaS Orchestrator and the Infrastructure Manager, currently, are using ansible 2.2.1, the same version is used.
+By default, since the INDIGO PaaS Orchestrator and the Infrastructure Manager, currently, are using ansible 2.3.3.0, the same version is used.
 
 ``ansible_venv``: /tmp/myansible
 
-``ANSIBLE_VERSION``: 2.2.1
+``ANSIBLE_VERSION``: 2.3.3.0
 
 Galaxycloud ansible roles branch.
 This script exploits Laniakea ansible roles in INDIGO GitHub repository.
@@ -110,23 +110,53 @@ Path for tools install.
 
 ``export_dir``: "/export"
 
-Usage
------
+Usage with Packer
+-----------------
 
-After the script configuration run:
-```
-/bin/bash setup.sh
-```
+json variables
+--------------
 
-The Galaxy tool_deps images are in ``/export`` directory.
+``tenant_id``: your tenant id on openstack
 
-Finally, the image can be cleaned using the clean_instance script:
+``ssh_keypair_name``: ssh_keypair_name present in openstack
 
-```
-/bin/bash /tmp/clean_instance.sh
-```
+``ssh_private_key_file``: path to the private key on the packerVM
+
+``username``: openstack username 
+
+``password``: openstack password
+
+``region``: openstack region
+
+``domain_name``: openstack domain name (if your openstack installation use domain, if not omit it)
+
+``ssh_username``: user of the Vm that will be used to create the image
+
+``image_name``: chose a name for your immage
+
+``source_image``: image ID of the base image present on openstack
+
+``vm_flavour``: flavor of the vm that will be deployed
+
+``networks``: openstack network ID (has to be the same of packer VM )
+
+``security_groups": name of the security group (port 22 has to be open to allow ssh protocol)
+
+Procedure
+---------
+
+- Create an Ubuntu VM on the Openstack tenant minimum requirements (2vcpu, 4Gb RAM, storage 40Gb)
+- Install [Packer] (https://packer.io/intro/getting-started/install.html) and move the binary to `/usr/bin`
+- Git clone this repository
+- Add `export OS_AUTH_URL=https://<keystoneendpoint>:5000/v3` to `~/.bashrc` and `source ~/.bashrc`
+- Open `TestPackerGalaxy.json` and configure it with the variables are present on your `openrc.sh`
+- Configure `setupLogScreen.sh` as explained in Setup script section
+- Run the packer script `packer build TestPackerGalaxy.json`
+- The image will be added to Glance
+
 
 Author
 ------
 
-Tangaro Marco: ma.tangaro@ibiom.cnr.it
+setup script: Tangaro Marco: ma.tangaro@ibiom.cnr.it
+Packer implementation: Mandreoli Pietro: pietro.mandreoli@unimi.it

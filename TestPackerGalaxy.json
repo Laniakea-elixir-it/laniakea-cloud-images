@@ -1,0 +1,24 @@
+{
+    "builders": [
+        {
+            "type": "openstack",
+            "ssh_username": "centos",
+            "image_name": "galaxy-testing-lite-release_19.05-999.1",
+            "source_image": "0dc34e91-4f3c-45ad-89ff-718d30223711",
+            "flavor": "medium",
+            "networks": "fe82ef7b-4bb7-4c1e-b4ec-ec5c1b0c7333",
+            "security_groups": "ssh",
+            "use_blockstorage_volume": "true",
+            "volume_size": "100",
+            "image_disk_format": "qcow2",
+            "image_min_disk": "10"
+        }
+    ],
+    "provisioners": [
+        {
+            "type": "shell",
+            "execute_command": "sudo {{.Path}}",
+            "scripts": "setupLogScreen.sh"
+        }
+    ]
+}

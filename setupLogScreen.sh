@@ -31,7 +31,7 @@
 # It is possibile to configure the path of the virtual environment and the Ansible version.
 # By default, since the INDIGO PaaS Orchestrator and the Infrastructure Manager, currently, are using ansible 2.2.1, the same version is used.
 ansible_venv=/tmp/myansible
-ANSIBLE_VERSION=2.2.1
+ANSIBLE_VERSION=2.3.3.0
 
 # Galaxycloud ansible roles branch.
 # This script exploits Laniakea ansible roles in INDIGO GitHub repository.
@@ -62,10 +62,6 @@ enable_2nic_config=false
 # To create the image for the worker nodes set the galaxy_flavor to base_image.
 create_galaxy_user=false
 
-# Create a tar.gz with conda tools dependencies on /export
-# The created tarball will have the galaxy flavour name.
-create_tool_deps_tar=true
-
 # Playbook variables
 # The default playbook is located here: https://raw.githubusercontent.com/Laniakea-elixir-it/laniakea-images/master/playbooks/galaxy.yml
 repository_url='https://raw.githubusercontent.com/Laniakea-elixir-it/laniakea-images/master'
@@ -80,13 +76,37 @@ galaxy_version="release_19.05"
 # galaxy-GDC_Somatic_Variant
 # galaxy-rna-workbench
 # galaxy-epigen
-galaxy_flavor="galaxy-no-tools"
+# galaxy-vinyl
+galaxy_flavor="galaxy-testing-lite"
 # Install a ssh public key on Galaxy and root user.
 # This key will be removed after Galaxy and tools installation.
 # See the galaxy playbook: https://raw.githubusercontent.com/Laniakea-elixir-it/laniakea-images/master/playbooks/galaxy.yml
 galaxy_instance_key_pub=""
 # Path for tools install.
 export_dir="/export"
+
+# Attach nfs to provide external storage to packer
+
+
+
+# Create a tar.gz with conda tools dependencies on /export
+# The created tarball will have the galaxy flavour name and version tag.
+# Tools will be uploaded on Openstack Swift, if properly configured.
+create_tool_deps_tar=true
+
+# Switft details
+swift_OS_PROJECT_DOMAIN_ID=default
+swift_OS_USER_DOMAIN_ID=default
+swift_OS_PROJECT_NAME=INDIGO_CNR
+swift_OS_TENANT_NAME=INDIGO_CNR
+swift_OS_USERNAME=*****
+swift_OS_PASSWORD=*****
+swift_OS_AUTH_URL=https://cloud.recas.ba.infn.it:5000/v3
+swift_OS_IDENTITY_API_VERSION=3
+swift_OS_REGION=recas-cloud
+
+swift_container=Laniakea-galaxy-tools-tar-999
+galaxy_flavor_image_tag=999
 
 #________________________________
 # Start logging
@@ -101,16 +121,16 @@ echo "Start log: ${now}" &>>  $LOGFILE
 DISTNAME=''
 if [[ -r /etc/os-release ]]; then
     . /etc/os-release
-    echo $ID &>> $LOGFILE
+    echo $ID 
     if [ "$ID" = "ubuntu" ]; then
-      echo 'Distribution Ubuntu' &>> $LOGFILE
+      echo 'Distribution Ubuntu' 
       DISTNAME='ubuntu'
     else
-      echo 'Distribution: CentOS' &>> $LOGFILE
+      echo 'Distribution: CentOS' 
       DISTNAME='centos'
     fi
 else
-    echo "Not running a distribution with /etc/os-release available" &>> $LOGFILE
+    echo "Not running a distribution with /etc/os-release available" 
 fi
 
 #________________________________
@@ -286,8 +306,8 @@ function start_services(){
 #________________________________
 # Run playbook
 function run_playbook(){
-  echo "Download playbook" &>> $LOGFILE
-  echo "${repository_url}/playbooks/$playbook" &>> $LOGFILE 
+  echo "Download playbook" 
+  echo "${repository_url}/playbooks/$playbook"  
 
   wget ${repository_url}/playbooks/$playbook -O /tmp/playbook.yml
   
@@ -403,12 +423,40 @@ if $enable_2nic_config; then
 fi
 
 # Create tool deps tar gz
-
+# and upload on Swift
 if $create_tool_deps_tar; then
+
   cd $export_dir
-  tar cvzf $galaxy_flavor.tar.gz tool_deps
+
+  tarball_file=$galaxy_flavor-$galaxy_version-$galaxy_flavor_image_tag.tar.gz
+  tar cvzf $tarball_file tool_deps
+
+  # Install Swift client
+  virtualenv --system-site-packages /tmp/swift_venv
+  . /tmp/swift_venv/bin/activate
+  pip install pip --upgrade
+  pip install python-swiftclient==3.4.0 python-keystoneclient==3.14.0
+
+  # Upload data
+  swift upload --insecure \
+        --os-auth-url $swift_OS_AUTH_URL \
+        --os-identity-api-version 3 \
+        --os-project-domain-id  $swift_OS_PROJECT_DOMAIN_ID \
+        --os-user-domain-id $swift_OS_USER_DOMAIN_ID \
+        --os-region-name $swift_OS_REGION \
+        --os-project-name $swift_OS_PROJECT_NAME \
+        --os-tenant-name $swift_OS_PROJECT_NAME \
+        --os-username $swift_OS_USERNAME \
+        --os-password $swift_OS_PASSWORD \
+        $swift_container -S 1073741824 $tarball_file
+
+  # Clean environment
+  rm -rf /tmp/swift_venv
+  rm -rf $export_dir
+
 fi
 
-} &>> $LOGFILE
+} 
 
-echo 'End setup script' &>> $LOGFILE
+echo 'End setup script' 
+
